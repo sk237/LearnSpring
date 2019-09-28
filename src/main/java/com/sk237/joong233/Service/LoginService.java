@@ -18,13 +18,8 @@ public class LoginService {
     @Autowired
     HttpSession session;
 
-    public String login(String userId, String userPw) {
-        if (userId.isEmpty() || userPw.isEmpty()) {
-            return "login";
-        }
+    public void login(String userId, String userPw) {
         session.setAttribute("loginUser", userId);
-
-        return "index";
     }
 
 }

@@ -36,9 +36,9 @@ public class UserController {
         String userId = paraMap.get("userId");
         String userPw = paraMap.get("userPw");
 
-        String page = loginService.login(userId, userPw);
+        loginService.login(userId, userPw);
 
-        return page;
+        return "index";
     }
 
 }

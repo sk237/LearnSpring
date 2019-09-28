@@ -55,13 +55,12 @@
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                   <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Home</a></li>
+                        <li class="active"><a href="/">Home</a></li>
                         <li><a href="#">About</a></li>
                         <li><a href="#">Projects</a></li>
                         <li><a href="#">Contact</a></li>
                   </ul>
                   <ul class="nav navbar-nav navbar-right">
-                        <li th:if ="${session.loginUser==null}"><a href="/loginPage"><span class="glyphicon glyphicon-log-in"></span> sign in</a></li>
                         <li th:if ="${session.loginUser==null}"><a href="/joinPage"><span class="glyphicon glyphicon-log-in"></span> sign up</a></li>
                         <li th:if ="${session.loginUser!=null}"><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> sign out</a></li>
                   </ul>
@@ -84,18 +83,20 @@
                   <p></p>
             </div>
             <div class="col-sm-2 sidenav">
-                  <div class="well">
-                        <p>ADS</p>
-                  </div>
-                  <div class="well">
-                        <p>ADS</p>
+                  <div th:if="${session.loginUser==null}">
+                        <form  action="/loginRequest" method="post">
+                              ID : <input type="text" name = "userId"> <br><br>
+                              PW : <input type="text" name = "userPw"><br><br>
+                              <input type="submit" value="sign in"><br><br>
+                        </form>
+
                   </div>
             </div>
       </div>
 </div>
 
 <footer class="container-fluid text-center">
-      <p>Footer Text</p>
+      <p>Seokjoong Kim</p>
 </footer>
 
 </body>
