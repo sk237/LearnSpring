@@ -1,5 +1,6 @@
 package com.sk237.joong233.Model;
 
+import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -7,6 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "user")
 @Setter
+@Getter
 public class User {
 
     @Id
