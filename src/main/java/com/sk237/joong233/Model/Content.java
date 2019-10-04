@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "content")
@@ -24,4 +25,7 @@ public class Content {
 
     @Column (name = "done")
     private int done;
+
+    @Column (name = "createdTime")
+    private LocalDateTime createdTime;
 }

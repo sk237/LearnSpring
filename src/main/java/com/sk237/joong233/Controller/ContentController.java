@@ -43,16 +43,16 @@ public class ContentController {
         Content content = contentRepository.getOne(idx);
         content.setDone(1);
         contentRepository.save(content);
-        User user = (User) session.getAttribute("loginUser");
-        session.setAttribute("contentList", toDoService.showAll(user.getUserId()));
+        session.setAttribute("contentList", toDoService.showAll(content.getUserId()));
         return "index";
     }
 
     @RequestMapping("/deleteToDo/{idx}")
     public String deleteToDo(@PathVariable long idx) {
+        Content content = contentRepository.findById(idx);
+        String userId = content.getUserId();
         contentRepository.deleteById(idx);
-        User user = (User) session.getAttribute("loginUser");
-        session.setAttribute("contentList", toDoService.showAll(user.getUserId()));
+        session.setAttribute("contentList", toDoService.showAll(userId));
         return "index";
     }
 }

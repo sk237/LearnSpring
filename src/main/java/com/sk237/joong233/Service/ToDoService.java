@@ -19,7 +19,7 @@ public class ToDoService {
     @Autowired
     HttpSession session;
     public List<Content> showAll(String userId) {
-        List<Content> list = contentRepository.findAllByUserId(userId);
+        List<Content> list = contentRepository.findAllByUserIdOrderByCreatedTime(userId);
         return list;
     }
 

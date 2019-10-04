@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 
 @Service
 public class CreateService {
@@ -23,9 +24,11 @@ public class CreateService {
         }
         Content con = new Content();
         User user = (User) session.getAttribute("loginUser");
+        LocalDateTime localDateTime = LocalDateTime.now();
         con.setContent(content);
         con.setUserId(user.getUserId());
         con.setDone(0);
+        con.setCreatedTime(localDateTime);
         contentRepository.save(con);
         return "redirect:";
     }

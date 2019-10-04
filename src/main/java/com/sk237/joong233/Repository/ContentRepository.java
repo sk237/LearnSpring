@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ContentRepository extends JpaRepository<Content, Long> {
-    List<Content> findAllByUserId(String userId);
-    Content findById(int id);
+    List<Content> findAllByUserIdOrderByCreatedTime(String userId);
+    Content findById(long id);
 }
