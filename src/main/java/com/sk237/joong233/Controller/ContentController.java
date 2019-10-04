@@ -7,11 +7,10 @@ import com.sk237.joong233.Service.CreateService;
 import com.sk237.joong233.Service.ToDoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
@@ -38,21 +37,26 @@ public class ContentController {
 
     }
 
-    @RequestMapping("done/{idx}")
-    public String done(@PathVariable long idx) {
-        Content content = contentRepository.getOne(idx);
-        content.setDone(1);
-        contentRepository.save(content);
-        session.setAttribute("contentList", toDoService.showAll(content.getUserId()));
-        return "index";
-    }
+    @PostMapping("/update")
+    public String update(HttpServletRequest request) {
+        String[] idDone = request.getParameterValues("doneBox");
+        String[] idDelete = request.getParameterValues("deleteBox");
+        if (idDone != null && idDone.length > 0) {
+            for (String id : idDone) {
+                Content content = contentRepository.getOne(Long.parseLong(id));
+                content.setDone((1 + content.getDone()) % 2);
+                contentRepository.save(content);
+            }
+        }
+        if (idDelete != null && idDelete.length > 0) {
+            for (String idCode : idDelete) {
+                long id = Long.parseLong(idCode);
+                contentRepository.deleteById(id);
+            }
+        }
 
-    @RequestMapping("/deleteToDo/{idx}")
-    public String deleteToDo(@PathVariable long idx) {
-        Content content = contentRepository.findById(idx);
-        String userId = content.getUserId();
-        contentRepository.deleteById(idx);
-        session.setAttribute("contentList", toDoService.showAll(userId));
+        User user = (User) session.getAttribute("loginUser");
+        session.setAttribute("contentList", toDoService.showAll(user.getUserId()));
         return "index";
     }
 }
