@@ -1,62 +1,49 @@
 package com.sk237.joong233.Controller;
 
-import com.sk237.joong233.Model.Content;
-import com.sk237.joong233.Model.User;
-import com.sk237.joong233.Repository.ContentRepository;
-import com.sk237.joong233.Service.CreateService;
-import com.sk237.joong233.Service.ToDoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sk237.joong233.Model.*;
+import com.sk237.joong233.Service.ContentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class ContentController {
 
-    @Autowired
-    private CreateService createService;
-
-    @Autowired
-    HttpSession session;
-
-    @Autowired
-    ContentRepository contentRepository;
-
-    @Autowired
-    ToDoService toDoService;
+    private final ContentService contentService;
+    private final HttpSession session;
 
     @PostMapping("/createToDo")
     public String createToDo(@RequestParam Map<String, String> paraMap) {
-
+        // todo need to fix for requestPara
         String content = paraMap.get("content");
-        return createService.create(content);
+        User user = (User) session.getAttribute("loginUser");
+        return contentService.create(content, user.getUserId());
 
     }
 
     @PostMapping("/update")
-    public String update(HttpServletRequest request) {
-        String[] idDone = request.getParameterValues("doneBox");
-        String[] idDelete = request.getParameterValues("deleteBox");
-        if (idDone != null && idDone.length > 0) {
-            for (String id : idDone) {
-                Content content = contentRepository.getOne(Long.parseLong(id));
-                content.setDone((1 + content.getDone()) % 2);
-                contentRepository.save(content);
-            }
-        }
-        if (idDelete != null && idDelete.length > 0) {
-            for (String idCode : idDelete) {
-                long id = Long.parseLong(idCode);
-                contentRepository.deleteById(id);
-            }
-        }
+    public ModelAndView update(@ModelAttribute(value = "contentList") ContentList updateContents) {
 
+        // todo it doesnt work, need to check binding list in thymeleaf
+        ModelAndView mav = new ModelAndView("index");
+        List<Content> contents = new ArrayList<>(updateContents.getContents());
+        contentService.update(contents);
         User user = (User) session.getAttribute("loginUser");
-        session.setAttribute("contentList", toDoService.showAll(user.getUserId()));
-        return "index";
+        List<Content> updatedContents = contentService.showAll(user.getUserId());
+        mav.addObject("contentList", new ContentList(updatedContents));
+        return mav;
     }
+
+
 }

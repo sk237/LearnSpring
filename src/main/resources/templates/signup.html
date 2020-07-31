@@ -59,7 +59,7 @@
 
                   </ul>
                   <ul class="nav navbar-nav navbar-right">
-                        <li th:if ="${session.loginUser==null}"><a href="/joinPage"><span class="glyphicon glyphicon-log-in"></span> sign up</a></li>
+                        <li th:if ="${session.loginUser==null}"><a href="/signupPage"><span class="glyphicon glyphicon-log-in"></span> sign up</a></li>
                         <li th:if ="${session.loginUser!=null}"><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> sign out</a></li>
                   </ul>
             </div>
@@ -74,12 +74,12 @@
                   <p><a href="#">Link</a></p>
             </div>
             <div class="col-sm-8 text-left">
-                  <form action="/joinRequest" method="post">
+                  <form action="#" method="post" th:object="${userInfo}" th:action="@{/signupRequest}">
                         <br>
-                        User ID  : <input type="text" name = "userId"><br><br>
-                        User PW  : <input type="password" name = "userPw"><br><br>
-                        Name     : <input type="text" name = "userName"><br><br>
-                        <input type="submit" value="sign up">
+                        User ID  : <input type="text" th:field="*{userId}"><br><br>
+                        User PW  : <input type="password" th:field="*{userPw}"><br><br>
+                        Name     : <input type="text" th:field="*{userName}"><br><br>
+                        <button type="submit">sign up</button>
                   </form>
             </div>
             <div class="col-sm-2 sidenav">

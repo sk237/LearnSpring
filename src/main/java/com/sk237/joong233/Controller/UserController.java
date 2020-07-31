@@ -1,47 +1,48 @@
 package com.sk237.joong233.Controller;
 
-import com.sk237.joong233.Service.JoinService;
-import com.sk237.joong233.Service.LoginService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sk237.joong233.Model.*;
+import com.sk237.joong233.Service.ContentService;
+import com.sk237.joong233.Service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.util.Map;
+import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private JoinService joinService;
+    private final UserService userService;
+    private final ContentService contentService;
+    private final HttpSession session;
 
-    @Autowired
-    private LoginService loginService;
+    @PostMapping(value = "signupRequest")
+    public String joinRequest(@ModelAttribute(value = "userInfo") UserInfo userInfo) {
 
-    @Autowired
-    HttpSession session;
+        String userId = userInfo.getUserId();
+        String userPw = userInfo.getUserPw();
+        String userName = userInfo.getUserName();
 
-    @PostMapping(value = "joinRequest")
-    public String joinRequest(@RequestParam Map<String, String> paraMap) {
-
-        String userId = paraMap.get("userId");
-        String userPw = paraMap.get("userPw");
-        String userName = paraMap.get("userName");
-        String page = joinService.joinUser(userId, userPw, userName);
-
-        return page;
+        return userService.joinUser(userId, userPw, userName);
     }
 
     @PostMapping(value = "loginRequest")
-    public String loginRequest(@RequestParam Map<String, String> paraMap) {
-        String userId = paraMap.get("userId");
-        String userPw = paraMap.get("userPw");
+    public ModelAndView loginRequest(@ModelAttribute(value = "userInfo") UserInfo userInfo) {
+        ModelAndView mav = new ModelAndView("index");
+        //TODO null check with aop
+        String userId = userInfo.getUserId();
+        String userPw = userInfo.getUserPw();
 
-        loginService.login(userId, userPw, session);
+        User user = userService.login(userId, userPw);
+        List<Content> contents = contentService.showAll(user.getUserId());
 
-        return "index";
+        session.setAttribute("loginUser", user);
+        mav.addObject("contentList", new ContentList(contents));
+        return mav;
     }
-
 }
 
