@@ -80,7 +80,7 @@
                         <li class="active"><a href="/">Home</a></li>
                   </ul>
                   <ul class="nav navbar-nav navbar-right">
-                        <li th:if="${session.loginUser==null}"><a href="/joinPage"><span
+                        <li th:if="${session.loginUser==null}"><a href="/signupPage"><span
                                 class="glyphicon glyphicon-log-in"></span> sign up</a></li>
                         <li th:if="${session.loginUser!=null}"><a href="/logout"><span
                                 class="glyphicon glyphicon-log-in"></span> sign out</a></li>
@@ -109,11 +109,11 @@
                               <input type="submit" value="posting"><br><br>
                         </form>
                         <hr>
-                        <th:block th:if="${session.contentList.size() == 0}">
+                        <th:block th:if="${contentList.getContents().size() == 0}">
                               <td>Nothing To Do</td>
                         </th:block>
 
-                        <form action="/update" method="post" th:if="${session.contentList.size() != 0}">
+                        <form action="/update" method="post" th:if="${contentList.contents.size() != 0}">
                               <table class="tableizer-table">
                                     <thead>
                                     <tr class="tableizer-firstrow">
@@ -122,27 +122,21 @@
                                           <th>To-Do</th>
                                     </tr>
                                     </thead>
-
-
                                     <tbody>
-
-
-                                    <th:block th:each="list:${session.contentList}">
+                                    <th:block th:each="item:${contentList.contents}">
                                           <tr>
-                                                <td>&nbsp<input type="checkbox" name="doneBox"
-                                                                th:value="${list.getId()}"></td>
-                                                <td>&nbsp<input type="checkbox" name="deleteBox"
-                                                                th:value="${list.getId()}"></td>
-                                                <td th:if="${list.getDone()==0}">&nbsp<span
-                                                        th:text="${list.getContent()}"></span>&nbsp&nbsp</td>
-                                                <td th:if="${list.getDone()==1}">&nbsp<s
-                                                        th:text="${list.getContent()}"></s>&nbsp&nbsp</td>
+                                                <td>&nbsp<input type="checkbox"
+                                                                th:action="${item.updateDone()}"></td>
+                                                <td>&nbsp<input type="checkbox"
+                                                                th:action="${item.deleteContent()}"></td>
+                                                <td th:if="${item.isDone()}">&nbsp<span
+                                                        th:text="${item.getContent()}"></span>&nbsp&nbsp</td>
+                                                <td th:if="${!item.isDone()}">&nbsp<s
+                                                        th:text="${item.getContent()}"></s>&nbsp&nbsp</td>
                                           </tr>
                                     </th:block>
 
                                     </tbody>
-
-
                               </table>
                               <p align="right">
                                     <button type="submit">update</button>
@@ -156,10 +150,10 @@
             </div>
             <div class="col-sm-2 sidenav">
                   <div th:if="${session.loginUser==null}">
-                        <form action="/loginRequest" method="post">
-                              ID : <input type="text" name="userId"> <br><br>
-                              PW : <input type="password" name="userPw"><br><br>
-                              <input type="submit" value="sign in"><br><br>
+                        <form action="#" method="post" th:object="${userInfo}" th:action="@{/loginRequest}">
+                              ID : <input type="text" th:field="*{userId}"> <br><br>
+                              PW : <input type="password" th:field="*{userPw}"><br><br>
+                              <button type="submit">sign in</button><br><br>
                         </form>
 
                   </div>

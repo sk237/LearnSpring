@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface ContentRepository extends JpaRepository<Content, Long> {
     List<Content> findAllByUserIdOrderByCreatedTime(String userId);
-    Content findById(long id);
 }
